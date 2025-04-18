@@ -21,7 +21,7 @@ public class Utilisateur {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String motDePasse;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -64,12 +64,12 @@ public class Utilisateur {
         this.email = email;
     }
 
-    public String getMotDePasse() {
-        return motDePasse;
+    public String getPassword() {
+        return password;
     }
 
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Role getRole() {

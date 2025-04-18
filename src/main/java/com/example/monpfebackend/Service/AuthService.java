@@ -3,7 +3,9 @@ package com.example.monpfebackend.Service;
 import com.example.monpfebackend.Entity.Utilisateur;
 import com.example.monpfebackend.Repository.AuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthService {
@@ -27,11 +29,14 @@ public class AuthService {
     public Utilisateur authenticateUtilisateur(Utilisateur utilisateur) {
         Utilisateur existingUtilisateur = authRepository.findByEmail(utilisateur.getEmail());
 
-        // Vérifier le mot de passe
-        if (existingUtilisateur != null && existingUtilisateur.getMotDePasse().equals(utilisateur.getMotDePasse())) {
-            return existingUtilisateur;
+        if (existingUtilisateur == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email n'existe pas");
         }
 
-        return null;
+        if (!existingUtilisateur.getPassword().equals(utilisateur.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Coordonnées invalides");
+        }
+
+        return existingUtilisateur;
     }
 }
