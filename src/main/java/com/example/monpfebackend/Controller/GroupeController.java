@@ -15,13 +15,6 @@ public class GroupeController {
 
     @Autowired
     private GroupeService groupeService;
-
-    // Ajouter un utilisateur à un groupe
-    @PostMapping("/assign/utilisateur/{utilisateurId}/groupe/{groupeId}")
-    public ResponseEntity<String> assignUtilisateurToGroupe(@PathVariable Long utilisateurId, @PathVariable Long groupeId) {
-        String response = groupeService.ajouterUtilisateurAuGroupe(utilisateurId, groupeId);
-        return ResponseEntity.ok(response);
-    }
     // Liste de tous les groupes
     @GetMapping
     public List<Groupe> getAllGroupes() {

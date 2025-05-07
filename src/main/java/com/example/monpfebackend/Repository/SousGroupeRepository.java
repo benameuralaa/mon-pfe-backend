@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+
 public interface SousGroupeRepository extends JpaRepository<SousGroupe, Long> {
 
     // Récupérer tous les sous-groupes d’un groupe donné

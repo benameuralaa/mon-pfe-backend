@@ -49,22 +49,22 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private Urgence urgence;
 
-    // Créateur du ticket
-    @ManyToOne
-    @JoinColumn(name = "createur_id", nullable = false)
+    // Créateur : UTILISATEUR normal
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "createur_id")
     private Utilisateur createur;
 
-    // Un ticket peut avoir un intervenant
+    // Intervenant
     @ManyToOne
     @JoinColumn(name = "intervenant_id")
     private Utilisateur intervenant;
 
     // Un ticket appartient à un seul groupe
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "groupe_id")
     private Groupe groupe;
 
-    // Un ticket appartient à un seul sous-groupe d'un groupe
+    // Sous-groupe (optionnel)
     @ManyToOne
     @JoinColumn(name = "sous_groupe_id")
     private SousGroupe sousGroupe;

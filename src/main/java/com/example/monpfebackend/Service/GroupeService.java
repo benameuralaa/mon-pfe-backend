@@ -18,21 +18,6 @@ public class GroupeService {
     @Autowired
     private UserRepository userRepository;
 
-    // Ajouter un utilisateur à un groupe existant
-    public String ajouterUtilisateurAuGroupe(Long utilisateurId, Long groupeId) {
-        Optional<Utilisateur> utilisateurOpt = userRepository.findById(utilisateurId);
-        Optional<Groupe> groupeOpt = groupeRepository.findById(groupeId);
-
-        if (utilisateurOpt.isPresent() && groupeOpt.isPresent()) {
-            Utilisateur utilisateur = utilisateurOpt.get();
-            Groupe groupe = groupeOpt.get();
-            utilisateur.getGroupes().add(groupe);
-            userRepository.save(utilisateur);
-            return "Utilisateur ajouté au groupe avec succès";
-        }
-        return "Utilisateur ou groupe non trouvé";
-    }
-
     // Récupérer tous les groupes
     public List<Groupe> getAllGroupes() {
         return groupeRepository.findAll();

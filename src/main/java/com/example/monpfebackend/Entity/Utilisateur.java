@@ -29,20 +29,17 @@ public class Utilisateur {
     @Column(nullable = false)
     private Role role;
 
-    // Un intervenant peut appartenir à plusieurs groupes
-    @ManyToMany
-    @JoinTable(
-            name = "intervenant_groupes",
-            joinColumns = @JoinColumn(name = "intervenant_id"),
-            inverseJoinColumns = @JoinColumn(name = "groupe_id")
-    )
-    private List<Groupe> groupes;
+    // Un intervenant appartient à un groupe
+    @ManyToOne(optional = false)  //
+    @JoinColumn(name = "groupe_id")
+    private Groupe groupe;
 
-    // Un utilisateur peut créer plusieurs tickets
+
+    // Un UTILISATEUR normal peut créer plusieurs tickets
     @OneToMany(mappedBy = "createur" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> ticketsCréés;    // Tickets créés par cet utilisateur
 
-    // Un utilisateur peut être assigné comme intervenant à plusieurs tickets
+    // Un INTERVENANT peut être assigné à plusieurs tickets
     @OneToMany(mappedBy = "intervenant")
     private List<Ticket> ticketsAssignés; // Tickets où il est intervenant
 
@@ -95,15 +92,6 @@ public class Utilisateur {
     public void setRole(Role role) {
         this.role = role;
     }
-
-    public List<Groupe> getGroupes() {
-        return groupes;
-    }
-
-    public void setGroupes(List<Groupe> groupes) {
-        this.groupes = groupes;
-    }
-
     public List<Ticket> getTicketsCréés() {
         return ticketsCréés;
     }
@@ -135,6 +123,6 @@ public class Utilisateur {
         this.piecesJointes = piecesJointes;
     }
 
-
 }
+
 
