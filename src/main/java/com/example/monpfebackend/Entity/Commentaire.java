@@ -10,17 +10,18 @@ public class Commentaire {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String contenu;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateAjout;
+    private Date dateCommentaire;
 
     @ManyToOne
-    @JoinColumn(name = "utilisateur_id")
-    private Utilisateur utilisateur;
+    @JoinColumn(name = "utilisateur_id", nullable = false)
+    private Utilisateur auteur;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
+    @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 
     // Getters & Setters
@@ -41,20 +42,20 @@ public class Commentaire {
         this.contenu = contenu;
     }
 
-    public Date getDateAjout() {
-        return dateAjout;
+    public Date getDateCommentaire() {
+        return dateCommentaire;
     }
 
-    public void setDateAjout(Date dateAjout) {
-        this.dateAjout = dateAjout;
+    public void setDateCommentaire(Date dateCommentaire) {
+        this.dateCommentaire = dateCommentaire;
     }
 
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
+    public Utilisateur getAuteur() {
+        return auteur;
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setAuteur(Utilisateur auteur) {
+        this.auteur = auteur;
     }
 
     public Ticket getTicket() {

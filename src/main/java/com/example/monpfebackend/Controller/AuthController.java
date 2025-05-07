@@ -18,9 +18,9 @@ public class AuthController {
 
     // Endpoint pour l'inscription
     @PostMapping("/register")
-    public String register(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<Boolean> registerUtilisateur(@RequestBody Utilisateur utilisateur) {
         boolean success = authService.registerUtilisateur(utilisateur);
-        return success ? "Inscription réussie" : "Email déjà utilisé";
+        return ResponseEntity.ok(success); // Retourne true/false avec status 200
     }
 
     // Endpoint pour la connexion

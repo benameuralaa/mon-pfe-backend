@@ -12,15 +12,13 @@ public class SousGroupe {
 
     private String nom;
 
-    private String description;
-
     // Chaque sous-groupe appartient à un groupe
     @ManyToOne
-    @JoinColumn(name = "groupe_id")
+    @JoinColumn(name = "groupe_id", nullable = false)
     private Groupe groupe;
 
     // Un sous-groupe peut avoir plusieurs tickets
-    @OneToMany(mappedBy = "sousGroupe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sousGroupe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets;
 
     // Getters & Setters
@@ -39,14 +37,6 @@ public class SousGroupe {
 
     public void setNom(String nom) {
         this.nom = nom;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Groupe getGroupe() {

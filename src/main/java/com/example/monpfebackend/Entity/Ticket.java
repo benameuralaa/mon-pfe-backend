@@ -10,7 +10,15 @@ public class Ticket {
     public enum Statut {
         EN_ATTENTE,
         EN_COURS,
-        TRAITE
+        TRAITE,
+        CLOTURE
+    }
+
+    public enum Type {
+        INCIDENT,
+        DEMANDE,
+        ASSISTANCE,
+        AUTRE
     }
 
     public enum Urgence {
@@ -23,8 +31,10 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String titre;
+    @Column(nullable = false)
+    private String sujet;
 
+    @Column(nullable = false)
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -34,31 +44,45 @@ public class Ticket {
     private Statut statut;
 
     @Enumerated(EnumType.STRING)
+    private Type type;
+
+    @Enumerated(EnumType.STRING)
     private Urgence urgence;
 
     // Créateur du ticket
     @ManyToOne
-    @JoinColumn(name = "utilisateur_id")
-    private Utilisateur utilisateur;
+    @JoinColumn(name = "createur_id", nullable = false)
+    private Utilisateur createur;
 
-    // Intervenant assigné
+    // Un ticket peut avoir un intervenant
     @ManyToOne
     @JoinColumn(name = "intervenant_id")
     private Utilisateur intervenant;
 
+    // Un ticket appartient à un seul groupe
     @ManyToOne
     @JoinColumn(name = "groupe_id")
     private Groupe groupe;
 
+    // Un ticket appartient à un seul sous-groupe d'un groupe
     @ManyToOne
     @JoinColumn(name = "sous_groupe_id")
     private SousGroupe sousGroupe;
 
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    // Un ticket peut avoir plusieurs commentaires
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Commentaire> commentaires;
 
-    // Getters & Setters
+    // Un ticket peut avoir plusieurs pièces jointes
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PieceJointe> piecesJointes;
 
+    @PrePersist
+    protected void onCreate() {
+        this.dateCreation = new Date();
+    }
+
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -67,12 +91,12 @@ public class Ticket {
         this.id = id;
     }
 
-    public String getTitre() {
-        return titre;
+    public String getSujet() {
+        return sujet;
     }
 
-    public void setTitre(String titre) {
-        this.titre = titre;
+    public void setSujet(String sujet) {
+        this.sujet = sujet;
     }
 
     public String getDescription() {
@@ -99,6 +123,14 @@ public class Ticket {
         this.statut = statut;
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public Urgence getUrgence() {
         return urgence;
     }
@@ -107,12 +139,12 @@ public class Ticket {
         this.urgence = urgence;
     }
 
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
+    public Utilisateur getCreateur() {
+        return createur;
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setCreateur(Utilisateur createur) {
+        this.createur = createur;
     }
 
     public Utilisateur getIntervenant() {
@@ -145,5 +177,13 @@ public class Ticket {
 
     public void setCommentaires(List<Commentaire> commentaires) {
         this.commentaires = commentaires;
+    }
+
+    public List<PieceJointe> getPiecesJointes() {
+        return piecesJointes;
+    }
+
+    public void setPiecesJointes(List<PieceJointe> piecesJointes) {
+        this.piecesJointes = piecesJointes;
     }
 }

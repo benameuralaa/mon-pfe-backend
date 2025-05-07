@@ -10,16 +10,15 @@ public class Groupe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String nom;
 
-    private String description;
-
     // Un groupe peut avoir plusieurs sous-groupes
-    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SousGroupe> sousGroupes;
 
     // Un groupe peut avoir plusieurs tickets
-    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets;
 
     // Getters & Setters
@@ -38,14 +37,6 @@ public class Groupe {
 
     public void setNom(String nom) {
         this.nom = nom;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public List<SousGroupe> getSousGroupes() {

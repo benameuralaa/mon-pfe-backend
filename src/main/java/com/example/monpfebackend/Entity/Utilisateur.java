@@ -16,27 +16,43 @@ public class Utilisateur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nom;
 
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
+    // Un intervenant peut appartenir à plusieurs groupes
+    @ManyToMany
+    @JoinTable(
+            name = "intervenant_groupes",
+            joinColumns = @JoinColumn(name = "intervenant_id"),
+            inverseJoinColumns = @JoinColumn(name = "groupe_id")
+    )
+    private List<Groupe> groupes;
+
     // Un utilisateur peut créer plusieurs tickets
-    @OneToMany(mappedBy = "utilisateur")
-    private List<Ticket> ticketsCréés;
+    @OneToMany(mappedBy = "createur" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> ticketsCréés;    // Tickets créés par cet utilisateur
 
     // Un utilisateur peut être assigné comme intervenant à plusieurs tickets
     @OneToMany(mappedBy = "intervenant")
-    private List<Ticket> ticketsAssignés;
+    private List<Ticket> ticketsAssignés; // Tickets où il est intervenant
 
     // Un utilisateur peut écrire plusieurs commentaires
-    @OneToMany(mappedBy = "utilisateur")
+    @OneToMany(mappedBy = "auteur" , cascade = CascadeType.ALL)
     private List<com.example.monpfebackend.Entity.Commentaire> commentaires;
+
+    // Un utilisateur peut ajouter plusieurs pièces jointes
+    @OneToMany(mappedBy = "uploader" , cascade = CascadeType.ALL)
+    private List<PieceJointe> piecesJointes;
 
     // Getters & Setters
 
@@ -80,6 +96,14 @@ public class Utilisateur {
         this.role = role;
     }
 
+    public List<Groupe> getGroupes() {
+        return groupes;
+    }
+
+    public void setGroupes(List<Groupe> groupes) {
+        this.groupes = groupes;
+    }
+
     public List<Ticket> getTicketsCréés() {
         return ticketsCréés;
     }
@@ -103,5 +127,14 @@ public class Utilisateur {
     public void setCommentaires(List<Commentaire> commentaires) {
         this.commentaires = commentaires;
     }
+    public List<PieceJointe> getPiecesJointes() {
+        return piecesJointes;
+    }
+
+    public void setPiecesJointes(List<PieceJointe> piecesJointes) {
+        this.piecesJointes = piecesJointes;
+    }
+
+
 }
 
