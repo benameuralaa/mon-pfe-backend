@@ -2,12 +2,15 @@ package com.example.monpfebackend.Controller;
 
 import com.example.monpfebackend.Entity.Groupe;
 import com.example.monpfebackend.Service.GroupeService;
+import com.example.monpfebackend.dto.GroupeDto;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/groupes")
@@ -32,12 +35,13 @@ public class GroupeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Groupe>> getAllGroupes() {
+    public ResponseEntity<List<GroupeDto>> getAllGroupes() {
         List<Groupe> groupes = groupeService.getAllGroupes();
-        // Force le chargement des intervenants
-        groupes.forEach(g -> g.getIntervenants().size());
-        return ResponseEntity.ok(groupes);
+        List<GroupeDto> dtos = groupes.stream().map(GroupeDto::new).collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGroupe(@PathVariable Long id) {
