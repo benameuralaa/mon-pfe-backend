@@ -33,7 +33,10 @@ public class GroupeController {
 
     @GetMapping
     public ResponseEntity<List<Groupe>> getAllGroupes() {
-        return ResponseEntity.ok(groupeService.getAllGroupes());
+        List<Groupe> groupes = groupeService.getAllGroupes();
+        // Force le chargement des intervenants
+        groupes.forEach(g -> g.getIntervenants().size());
+        return ResponseEntity.ok(groupes);
     }
 
     @DeleteMapping("/{id}")

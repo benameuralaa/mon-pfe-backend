@@ -1,11 +1,12 @@
 package com.example.monpfebackend.Entity;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Utilisateur {
-
     public enum Role {
         ADMIN,
         INTERVENANT,
@@ -29,29 +30,42 @@ public class Utilisateur {
     @Column(nullable = false)
     private Role role;
 
-    // Définir la relation ManyToOne avec Groupe
-    @ManyToOne
-    @JoinColumn(name = "groupe_id") // Colonne pour la clé étrangère dans la table Utilisateur
+    // Relation ManyToOne avec Groupe
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "groupe_id")
     private Groupe groupe;
 
     // Un UTILISATEUR normal peut créer plusieurs tickets
-    @OneToMany(mappedBy = "createur" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ticket> ticketsCréés;    // Tickets créés par cet utilisateur
+    @OneToMany(mappedBy = "createur",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Ticket> ticketsCréés = new ArrayList<>();
 
     // Un INTERVENANT peut être assigné à plusieurs tickets
     @OneToMany(mappedBy = "intervenant")
-    private List<Ticket> ticketsAssignés; // Tickets où il est intervenant
+    private List<Ticket> ticketsAssignés = new ArrayList<>();
 
     // Un utilisateur peut écrire plusieurs commentaires
-    @OneToMany(mappedBy = "auteur" , cascade = CascadeType.ALL)
-    private List<com.example.monpfebackend.Entity.Commentaire> commentaires;
+    @OneToMany(mappedBy = "auteur",
+            cascade = CascadeType.ALL)
+    private List<Commentaire> commentaires = new ArrayList<>();
 
     // Un utilisateur peut ajouter plusieurs pièces jointes
-    @OneToMany(mappedBy = "uploader" , cascade = CascadeType.ALL)
-    private List<PieceJointe> piecesJointes;
+    @OneToMany(mappedBy = "uploader",
+            cascade = CascadeType.ALL)
+    private List<PieceJointe> piecesJointes = new ArrayList<>();
 
-    // Getters & Setters
+    // Constructeurs
+    public Utilisateur() {}
 
+    public Utilisateur(String nom, String email, String password, Role role) {
+        this.nom = nom;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    // Getters & Setters (inchangés)
     public Long getId() {
         return id;
     }
@@ -123,6 +137,7 @@ public class Utilisateur {
     public void setCommentaires(List<Commentaire> commentaires) {
         this.commentaires = commentaires;
     }
+
     public List<PieceJointe> getPiecesJointes() {
         return piecesJointes;
     }

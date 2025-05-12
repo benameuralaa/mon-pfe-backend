@@ -22,12 +22,28 @@ public class GroupeService {
     private UserRepository userRepository;
 
     // Créer un groupe
+    @Transactional
     public Groupe createGroupe(Groupe groupe, List<Long> intervenantIds) {
+        // Vérifier que le nom du groupe n'est pas vide
+        if (groupe.getNom() == null || groupe.getNom().trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom du groupe ne peut pas être vide");
+        }
+
+        // Vérifier que des intervenants sont sélectionnés
+        if (intervenantIds == null || intervenantIds.isEmpty()) {
+            throw new IllegalArgumentException("Vous devez sélectionner au moins un intervenant");
+        }
+
         // Trouver les intervenants à partir des IDs
         List<Utilisateur> intervenants = userRepository.findAllById(intervenantIds)
                 .stream()
                 .filter(u -> u.getRole() == Utilisateur.Role.INTERVENANT)
                 .collect(Collectors.toList());
+
+        // Vérifier que les intervenants existent
+        if (intervenants.isEmpty()) {
+            throw new IllegalArgumentException("Aucun intervenant valide n'a été trouvé");
+        }
 
         // Lier les intervenants au groupe
         groupe.setIntervenants(intervenants);
@@ -37,8 +53,8 @@ public class GroupeService {
 
         // Mettre à jour le groupe pour chaque intervenant
         intervenants.forEach(intervenant -> {
-            intervenant.setGroupe(savedGroupe);  // Associer le groupe à l'utilisateur
-            userRepository.save(intervenant);  // Sauvegarder l'utilisateur avec le groupe mis à jour
+            intervenant.setGroupe(savedGroupe);
+            userRepository.save(intervenant);
         });
 
         return savedGroupe;
