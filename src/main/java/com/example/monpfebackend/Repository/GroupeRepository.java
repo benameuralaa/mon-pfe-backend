@@ -8,7 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface GroupeRepository extends JpaRepository<Groupe, Long> {
-    // Retrouver un groupe par son nom
-    Optional<Groupe> findByNom(String nom);
 }
 

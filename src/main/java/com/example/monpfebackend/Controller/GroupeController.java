@@ -3,6 +3,7 @@ package com.example.monpfebackend.Controller;
 import com.example.monpfebackend.Entity.Groupe;
 import com.example.monpfebackend.Service.GroupeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,38 +11,39 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/groupes")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class GroupeController {
 
     @Autowired
     private GroupeService groupeService;
-    // Liste de tous les groupes
-    @GetMapping
-    public List<Groupe> getAllGroupes() {
-        return groupeService.getAllGroupes();
-    }
 
-    // Récupérer un groupe par son ID : Détails d’un groupe.
-    @GetMapping("/{id}")
-    public Groupe getGroupeById(@PathVariable Long id) {
-        return groupeService.getGroupeById(id);
-    }
-
-    // Créer un nouveau groupe
     @PostMapping
-    public Groupe createGroupe(@RequestBody Groupe groupe) {
-        return groupeService.createGroupe(groupe);
+    public ResponseEntity<Groupe> createGroupe(@RequestBody Groupe groupe, @RequestParam List<Long> intervenantIds) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(groupeService.createGroupe(groupe, intervenantIds));
     }
 
-    // Modifier un groupe existant
     @PutMapping("/{id}")
-    public Groupe updateGroupe(@PathVariable Long id, @RequestBody Groupe groupe) {
-        return groupeService.updateGroupe(id, groupe);
+    public ResponseEntity<Groupe> updateGroupe(@PathVariable Long id,
+                                               @RequestBody Groupe groupe,
+                                               @RequestParam List<Long> intervenantIds) {
+        groupe.setId(id);
+        return ResponseEntity.ok(groupeService.updateGroupe(groupe, intervenantIds));
     }
 
-    // Endpoint pour supprimer un groupe par ID
+    @GetMapping
+    public ResponseEntity<List<Groupe>> getAllGroupes() {
+        return ResponseEntity.ok(groupeService.getAllGroupes());
+    }
+
     @DeleteMapping("/{id}")
-    public void deleteGroupe(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteGroupe(@PathVariable Long id) {
         groupeService.deleteGroupe(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Groupe> getGroupeById(@PathVariable Long id) {
+        return ResponseEntity.ok(groupeService.getGroupeById(id));
     }
 }

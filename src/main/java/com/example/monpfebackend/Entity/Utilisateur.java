@@ -29,11 +29,10 @@ public class Utilisateur {
     @Column(nullable = false)
     private Role role;
 
-    // Un intervenant appartient à un groupe
-    @ManyToOne(optional = false)  //
-    @JoinColumn(name = "groupe_id")
+    // Définir la relation ManyToOne avec Groupe
+    @ManyToOne
+    @JoinColumn(name = "groupe_id") // Colonne pour la clé étrangère dans la table Utilisateur
     private Groupe groupe;
-
 
     // Un UTILISATEUR normal peut créer plusieurs tickets
     @OneToMany(mappedBy = "createur" , cascade = CascadeType.ALL, orphanRemoval = true)
@@ -92,6 +91,15 @@ public class Utilisateur {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
+    }
+
     public List<Ticket> getTicketsCréés() {
         return ticketsCréés;
     }

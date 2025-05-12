@@ -19,9 +19,6 @@ public class PieceJointe {
     @Column(nullable = true)
     private String cheminFichier;
 
-    @Lob
-    private byte[] contenu;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateFichier;
 
@@ -67,14 +64,6 @@ public class PieceJointe {
 
     public void setCheminFichier(String cheminFichier) {
         this.cheminFichier = cheminFichier;
-    }
-
-    public byte[] getContenu() {
-        return contenu;
-    }
-
-    public void setContenu(byte[] contenu) {
-        this.contenu = contenu;
     }
 
     public Date getDateFichier() {

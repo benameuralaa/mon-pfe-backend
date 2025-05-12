@@ -14,6 +14,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    // Filtrer utilisateurs par role
+    public List<Utilisateur> getUsersByRole(Utilisateur.Role role) {
+        return userRepository.findByRole(role);
+    }
     // Récupérer tous les utilisateurs
     public List<Utilisateur> getAllUsers() {
         return userRepository.findAll();

@@ -1,8 +1,6 @@
 package com.example.monpfebackend.Controller;
 
 import com.example.monpfebackend.Entity.Utilisateur;
-import com.example.monpfebackend.Repository.AuthRepository;
-import com.example.monpfebackend.Repository.UserRepository;
 import com.example.monpfebackend.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,20 +8,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users") // URL de base pour les utilisateurs
-@CrossOrigin(origins = "http://localhost:4200") // Angular port
+@RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    // Récupérer la liste de tous les utilisateurs
+    // ✅ Récupérer les utilisateurs (optionnellement par rôle)
     @GetMapping
-    public List<Utilisateur> getAllUsers() {
-        return userService.getAllUsers();
+    public List<Utilisateur> getUsers(@RequestParam(required = false) String role) {
+        if (role != null) {
+            try {
+                Utilisateur.Role userRole = Utilisateur.Role.valueOf(role.toUpperCase());
+                return userService.getUsersByRole(userRole);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Rôle invalide : " + role);
+            }
+        } else {
+            return userService.getAllUsers();
+        }
     }
 
     // Ajouter un nouvel utilisateur
@@ -31,8 +37,6 @@ public class UserController {
     public ResponseEntity<Utilisateur> addUser(@RequestBody Utilisateur utilisateur) {
         Utilisateur saved = userService.addUser(utilisateur);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-        //Code HTTP : 201 CREATED
-        // body(saved) = on renvoie le nouvel objet créé dans le corps de la réponse
     }
 
     // Mettre à jour un utilisateur existant
@@ -40,13 +44,13 @@ public class UserController {
     public ResponseEntity<Utilisateur> updateUser(@PathVariable Long id, @RequestBody Utilisateur utilisateur) {
         utilisateur.setId(id);
         Utilisateur updated = userService.updateUser(utilisateur);
-        return ResponseEntity.ok(updated); // updated : on renvoie l’objet mis à jour
+        return ResponseEntity.ok(updated);
     }
 
-    // Supprimer un utilisateur par son ID
+    // Supprimer un utilisateur
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return ResponseEntity.noContent().build(); // Code HTTP : 204 NO CONTENT , Réponse vide après suppression
+        return ResponseEntity.noContent().build();
     }
 }

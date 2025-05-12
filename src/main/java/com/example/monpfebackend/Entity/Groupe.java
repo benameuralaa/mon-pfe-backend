@@ -13,6 +13,10 @@ public class Groupe {
     @Column(nullable = false, unique = true)
     private String nom;
 
+    // Un groupe peut avoir plusieurs intervenants
+    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
+    private List<Utilisateur> intervenants;
+
     // Un groupe peut avoir plusieurs sous-groupes
     @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SousGroupe> sousGroupes;
@@ -22,7 +26,6 @@ public class Groupe {
     private List<Ticket> tickets;
 
     // Getters & Setters
-
     public Long getId() {
         return id;
     }
@@ -37,6 +40,14 @@ public class Groupe {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public List<Utilisateur> getIntervenants() {
+        return intervenants;
+    }
+
+    public void setIntervenants(List<Utilisateur> intervenants) {
+        this.intervenants = intervenants;
     }
 
     public List<SousGroupe> getSousGroupes() {
@@ -55,4 +66,3 @@ public class Groupe {
         this.tickets = tickets;
     }
 }
-
